@@ -1,0 +1,9 @@
+.idea/
+.pytest_cache/
+htmlcov/
+build/
+app_utils.egg-info/
+dist/
+.version
+*.pyc
+.coverage

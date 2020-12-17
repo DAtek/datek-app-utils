@@ -1,0 +1,44 @@
+image: python:3.8.6
+
+stages:
+  - build
+  - test
+  - publish
+
+before_script:
+  - echo $CI_COMMIT_BRANCH
+  - echo $CI_COMMIT_TAG
+
+build:
+  stage: build
+  script:
+    - python -V
+    - pip install virtualenv
+    - virtualenv venv
+  artifacts:
+    paths:
+      - venv
+    expire_in: 1 hour
+
+test:
+  stage: test
+  dependencies:
+    - build
+  script:
+    - source venv/bin/activate
+    - pip install -r requirements.txt
+    - pytest tests/
+
+publish:
+  stage: publish
+  dependencies:
+    - build
+  script:
+    - source venv/bin/activate
+    - echo ${CI_COMMIT_TAG} > .version
+    - pip install twine
+    - python setup.py bdist_wheel
+    - TWINE_PASSWORD=${CI_JOB_TOKEN} TWINE_USERNAME=gitlab-ci-token python -m twine upload --repository-url https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/packages/pypi dist/*
+  only:
+      variables:
+        - $CI_COMMIT_TAG != null

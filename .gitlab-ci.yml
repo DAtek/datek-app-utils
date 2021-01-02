@@ -1,7 +1,6 @@
-image: python:3.8.6
+image: registry.gitlab.com/datek/docker-images/python3.8.7-poetry
 
 stages:
-  - build
   - test
   - publish
 
@@ -9,36 +8,28 @@ before_script:
   - echo $CI_COMMIT_BRANCH
   - echo $CI_COMMIT_TAG
 
-build:
-  stage: build
+test:
+  stage: test
   script:
-    - python -V
-    - pip install virtualenv
     - virtualenv venv
+    - source venv/bin/activate
+    - poetry install
+    - pytest tests/
   artifacts:
     paths:
       - venv
     expire_in: 1 hour
 
-test:
-  stage: test
-  dependencies:
-    - build
-  script:
-    - source venv/bin/activate
-    - pip install -r requirements.txt
-    - pytest tests/
-
 publish:
   stage: publish
   dependencies:
-    - build
+    - test
   script:
     - source venv/bin/activate
-    - echo ${CI_COMMIT_TAG} > .version
-    - pip install twine
-    - python setup.py bdist_wheel
-    - TWINE_PASSWORD=${CI_JOB_TOKEN} TWINE_USERNAME=gitlab-ci-token python -m twine upload --repository-url https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/packages/pypi dist/*
+    - inject-version ${CI_COMMIT_TAG} pyproject.toml
+    - poetry build
+    - poetry config repositories.gitlab https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/packages/pypi
+    - poetry publish -r gitlab -u gitlab-ci-token -p ${CI_JOB_TOKEN}
   only:
       variables:
         - $CI_COMMIT_TAG != null

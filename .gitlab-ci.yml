@@ -1,4 +1,4 @@
-image: registry.gitlab.com/datek/docker-images/python3.8.7-poetry
+image: registry.gitlab.com/datek/docker-images/python3.8.7-poetry-ci-tools
 
 stages:
   - test

@@ -11,13 +11,7 @@ python = "^3.8"
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.1"
 pytest-cov = "^2.10.1"
-ci-tools = "^0.1.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
-
-[[tool.poetry.source]]
-name = "ci-tools"
-url = "https://gitlab+deploy-token-319254:VzxTebK6tzfSby3da_88@gitlab.com/api/v4/projects/23407680/packages/pypi/simple/"
-secondary = true

@@ -1,4 +1,4 @@
-image: registry.gitlab.com/datek/docker-images/python3.8.7-poetry-ci-tools
+image: registry.gitlab.com/datek/docker-images/python3.8.7-poetry
 
 stages:
   - test
@@ -26,7 +26,7 @@ publish:
     - test
   script:
     - source venv/bin/activate
-    - inject-version ${CI_COMMIT_TAG} pyproject.toml
+    - poetry version ${CI_COMMIT_TAG}
     - poetry build
     - poetry config repositories.gitlab https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/packages/pypi
     - poetry publish -r gitlab -u gitlab-ci-token -p ${CI_JOB_TOKEN}

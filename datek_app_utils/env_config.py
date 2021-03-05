@@ -1,7 +1,7 @@
 from os import getenv
 from typing import get_type_hints, Any
 
-from app_utils.log import create_logger
+from datek_app_utils.log import create_logger
 
 
 class InstantiationForbiddenError(Exception):

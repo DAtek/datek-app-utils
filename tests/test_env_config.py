@@ -4,7 +4,7 @@ from logging import INFO, ERROR
 
 from pytest import raises
 
-from app_utils.env_config import BaseConfig, InstantiationForbiddenError, validate_config
+from datek_app_utils.env_config import BaseConfig, InstantiationForbiddenError, validate_config
 
 KEY_VOLUME = "VOLUME"
 

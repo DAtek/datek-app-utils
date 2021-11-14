@@ -1,10 +1,12 @@
-from logging import DEBUG, Formatter
+from logging import DEBUG, Formatter, StreamHandler
 
-from datek_app_utils.log import LogLevel, LogFormatter, create_logger
+from datek_app_utils.log import LogLevel, LogFormatter, create_logger, LogHandler
 
 
 def test_debug(caplog):
     message = "message"
+    handler = StreamHandler()
+    LogHandler.set(handler)
     LogLevel.set(DEBUG)
     LogFormatter.set(
         Formatter("%(asctime)s - %(filename)s:%(lineno)d - %(levelname)-8s %(message)s")

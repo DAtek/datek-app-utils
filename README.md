@@ -3,15 +3,15 @@
 
 # Utilities for building applications.
 
-## Contains: 
-- Logging
-- Loading config from environment variables
+## Contains:
+- Config loading from environment
+- Bootstrap for logging
 
-## Config usage: 
+## Examples: 
 ```python
 import os
 
-from datek_app_utils.env_config import BaseConfig
+from datek_app_utils.env_config.base import BaseConfig
 
 os.environ["COLOR"] = "RED"
 os.environ["TEMPERATURE"] = "50"
@@ -26,13 +26,15 @@ assert Config.COLOR == "RED"
 assert Config.TEMPERATURE == 50
 ```
 
-The values are being casted if you read them.
-Moreover, you can test whether all of the variables have been set or not.
+The `Config` class casts the values automatically.
+Moreover, you can test whether all the variables have been set or not.
 
 ```python
 import os
 
-from datek_app_utils.env_config import BaseConfig, validate_config
+from datek_app_utils.env_config.base import BaseConfig
+from datek_app_utils.env_config.utils import validate_config
+from datek_app_utils.env_config.errors import ValidationError
 
 os.environ["COLOR"] = "RED"
 
@@ -42,11 +44,14 @@ class Config(BaseConfig):
     TEMPERATURE: int
 
 
-assert not validate_config(Config)
+try:
+    validate_config(Config)
+except ValidationError as error:
+    for attribute_error in error.errors:
+        print(attribute_error)
+
 ```
-outputs:
+Output:
 ```
-2021-03-05 19:03:22,023 [env_config.py:58] INFO     Validating config: Config
-2021-03-05 19:03:22,023 [env_config.py:62] INFO     COLOR: RED
-2021-03-05 19:03:22,023 [env_config.py:66] ERROR    Environmental variable `TEMPERATURE` is not set. Required type: <class 'int'>
+TEMPERATURE: Not set. Required type: <class 'int'>
 ```

@@ -1,11 +1,7 @@
 from os import getenv
-from typing import get_type_hints, Any
+from typing import Any, get_type_hints
 
-from datek_app_utils.log import create_logger
-
-
-class InstantiationForbiddenError(Exception):
-    pass
+from datek_app_utils.env_config.errors import InstantiationForbiddenError
 
 
 class Variable:
@@ -51,24 +47,3 @@ class ConfigMeta(type):
 class BaseConfig(metaclass=ConfigMeta):
     def __new__(cls, *args, **kwargs):
         raise InstantiationForbiddenError
-
-
-def validate_config(config_class: ConfigMeta) -> bool:
-    valid = True
-    _logger.info(f"Validating config: {config_class.__name__}")
-    for item in config_class:
-        try:
-            if item.value is not None:
-                _logger.info(f"{item.name}: {item.value}")
-                continue
-
-            valid = False
-            _logger.error(f"Environmental variable `{item.name}` is not set. Required type: {item.type}")
-        except Exception as error:
-            _logger.error(error)
-            valid = False
-
-    return valid
-
-
-_logger = create_logger(__name__)

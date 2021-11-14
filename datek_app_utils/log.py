@@ -1,7 +1,16 @@
-from logging import Formatter, StreamHandler, getLogger, Logger, INFO
+from logging import Formatter, StreamHandler, getLogger, Logger, INFO, Handler
 
 
-_handler = StreamHandler()
+class LogHandler:
+    _handler = StreamHandler()
+
+    @classmethod
+    def set(cls, handler: Handler):
+        cls._handler = handler
+
+    @classmethod
+    def get(cls) -> Handler:
+        return cls._handler
 
 
 class LogLevel:
@@ -17,23 +26,26 @@ class LogLevel:
 
 
 class LogFormatter:
-    _formatter: Formatter = Formatter("%(asctime)s [%(filename)s:%(lineno)d] %(levelname)-8s %(message)s")
+    _formatter: Formatter = Formatter(
+        "%(asctime)s [%(filename)s:%(lineno)d] %(levelname)-8s %(message)s"
+    )
 
     @classmethod
     def set(cls, formatter: Formatter):
         cls._formatter = formatter
+        LogHandler.get().setFormatter(formatter)
 
     @classmethod
     def get(cls) -> Formatter:
         return cls._formatter
 
 
-def create_logger(name: str) -> Logger:
-    global _handler
+LogHandler.get().setFormatter(LogFormatter.get())
 
-    _handler.setFormatter(LogFormatter.get())
+
+def create_logger(name: str) -> Logger:
     logger = getLogger(name)
-    logger.addHandler(_handler)
+    logger.addHandler(LogHandler.get())
     logger.setLevel(LogLevel.get())
 
     return logger

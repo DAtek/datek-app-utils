@@ -1,5 +1,6 @@
-[![pipeline status](https://gitlab.com/DAtek/app-utils/badges/master/pipeline.svg)](https://gitlab.com/DAtek/app-utils/-/commits/master)
-[![coverage report](https://gitlab.com/DAtek/app-utils/badges/master/coverage.svg)](https://gitlab.com/DAtek/app-utils/-/commits/master)
+[![codecov](https://codecov.io/gh/DAtek/datek-app-utils/branch/master/graph/badge.svg?token=UR0G0I41LD)](https://codecov.io/gh/DAtek/datek-app-utils)
+<a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
+<a href="https://github.com/psf/black/blob/main/LICENSE"><img alt="License: MIT" src="https://black.readthedocs.io/en/stable/_static/license.svg"></a>
 
 # Utilities for building applications.
 

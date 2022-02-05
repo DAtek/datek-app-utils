@@ -2,11 +2,11 @@
 name = "datek_app_utils"
 version = "0.0.0"
 description = "Utilities for building applications"
-authors = ["Attila Dudas <attila.dudas@protonmail.com>"]
+authors = ["Attila Dudas <dudasa7@gmail.com>"]
 license = "MIT"
 include = ["README.md"]
 readme = "README.md"
-repository = "https://gitlab.com/DAtek/app-utils"
+repository = "https://github.com/DAtek/datek-app-utils/"
 
 [tool.poetry.dependencies]
 python = "^3.8"

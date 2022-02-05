@@ -4,6 +4,7 @@ htmlcov/
 build/
 app_utils.egg-info/
 dist/
+.venv/
 .version
 *.pyc
 .coverage

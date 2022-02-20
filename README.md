@@ -28,7 +28,7 @@ assert Config.TEMPERATURE == 50
 ```
 
 The `Config` class casts the values automatically.
-Moreover, you can test whether all the variables have been set or not.
+Moreover, you can test whether all the mandatory variables have been set or not.
 
 ```python
 import os
@@ -43,6 +43,7 @@ os.environ["COLOR"] = "RED"
 class Config(BaseConfig):
     COLOR: str
     TEMPERATURE: int
+    AMOUNT: int = None
 
 
 try:

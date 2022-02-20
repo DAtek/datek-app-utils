@@ -29,7 +29,7 @@ def _validate_attribute(item: Variable):
             required_type=item.type,
         )
 
-    if value is None:
+    if item.default_value is ... and value is None:
         raise ConfigAttributeError(
             error_type=ConfigAttributeErrorType.NOT_SET,
             attribute_name=item.name,

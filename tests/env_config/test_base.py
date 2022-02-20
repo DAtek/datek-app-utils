@@ -4,17 +4,22 @@ from datek_app_utils.env_config.base import BaseConfig
 from datek_app_utils.env_config.errors import InstantiationForbiddenError
 
 
+class SomeOtherMixinWhichDoesntRelateToEnvConfig:
+    color = "red"
+
+
 class TestConfig:
     def test_iter(self, monkeypatch, key_volume, base_config_class):
         volume = 5
         monkeypatch.setenv(key_volume, str(volume))
 
-        class Config(base_config_class):
+        class Config(SomeOtherMixinWhichDoesntRelateToEnvConfig, base_config_class):
             TYPE: str
 
         items = [item for item in Config]
 
         assert len(items) == 4
+        assert Config.color == "red"
 
         assert items[0].name == "TYPE"
         assert items[0].value is None

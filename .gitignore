@@ -1,10 +1,13 @@
 .idea/
+.mypy_cache/
 .pytest_cache/
+.venv/
+.vscode/
 htmlcov/
 build/
 app_utils.egg-info/
 dist/
-.venv/
 .version
 *.pyc
 .coverage
+coverage.xml

@@ -2,7 +2,7 @@ from logging import Formatter, StreamHandler, getLogger, Logger, INFO, Handler
 
 
 class LogHandler:
-    _handler = StreamHandler()
+    _handler: Handler = StreamHandler()
 
     @classmethod
     def set(cls, handler: Handler):

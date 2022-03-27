@@ -1,12 +1,13 @@
 from os import getenv
-from typing import Any, Iterable
+from typing import Any, Iterator, get_args
 
 from datek_app_utils.env_config.errors import InstantiationForbiddenError
 
 
 class Variable:
     def __init__(self, type_: type = str, default_value=...):
-        self._type = type_
+        type_args = get_args(type_)
+        self._type = type_args[0] if type_args else type_
         self._default_value = default_value
 
     def __set_name__(self, owner, name):
@@ -50,7 +51,7 @@ class ConfigMeta(type):
 
         return super().__new__(mcs, name, bases, namespace)
 
-    def __iter__(cls) -> Iterable[Variable]:
+    def __iter__(cls) -> Iterator[Variable]:
         return (value for value in cls.__dict__.values() if isinstance(value, Variable))
 
 

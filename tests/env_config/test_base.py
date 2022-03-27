@@ -18,7 +18,7 @@ class TestConfig:
 
         items = [item for item in Config]
 
-        assert len(items) == 4
+        assert len(items) == 5
         assert Config.color == "red"
 
         assert items[0].name == "TYPE"
@@ -33,9 +33,13 @@ class TestConfig:
         assert items[2].value is None
         assert items[2].type == str
 
-        assert items[3].name == "VOLUME"
-        assert items[3].value == volume
-        assert items[3].type == int
+        assert items[3].name == "TYPED_NON_MANDATORY_FIELD"
+        assert items[3].value is None
+        assert items[3].type == str
+
+        assert items[4].name == "VOLUME"
+        assert items[4].value == volume
+        assert items[4].type == int
 
     def test_get(self, monkeypatch, key_volume, base_config_class):
         volume = 10

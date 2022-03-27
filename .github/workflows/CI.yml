@@ -13,10 +13,12 @@ jobs:
       - name: Install env
         uses: ./.github/actions/install-python-env
 
-      - name: Black
+      - name: Lint
         run: |
           source .venv/bin/activate
           black datek_app_utils/ tests/ --check
+          mypy datek_app_utils/ tests/
+          unimport datek_app_utils/ tests/
 
       - name: Tests
         run: |

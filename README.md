@@ -7,8 +7,12 @@
 ## Contains:
 - Config loading from environment
 - Bootstrap for logging
+- Base class for creating async workers
+- Async timeout decorator, which is very useful for writing async tests
 
-## Examples: 
+## Examples:
+
+### Env config
 ```python
 import os
 
@@ -56,4 +60,24 @@ except ValidationError as error:
 Output:
 ```
 TEMPERATURE: Not set. Required type: <class 'int'>
+```
+
+### Async timeout decorator
+
+```python
+from asyncio import sleep, run
+from datek_app_utils.async_utils import async_timeout
+
+
+@async_timeout(0.1)
+async def sleep_one_sec():
+    await sleep(1)
+
+    
+run(sleep_one_sec())
+
+```
+Output:
+```
+TimeoutError
 ```

@@ -3,6 +3,7 @@
 .pytest_cache/
 .venv/
 .vscode/
+.lh/
 htmlcov/
 build/
 app_utils.egg-info/

@@ -61,11 +61,13 @@ def async_timeout(seconds: float):
                 raise TimeoutError
 
             async def main():
-                result_ = await func(*args, **kwargs)
-                if timeout_task:
-                    timeout_task.cancel()
-
-                return result_
+                try:
+                    return await func(*args, **kwargs)
+                except Exception:
+                    raise
+                finally:
+                    if timeout_task:
+                        timeout_task.cancel()
 
             timeout_task = create_task(raise_timeout_error())
             main_task = create_task(main())

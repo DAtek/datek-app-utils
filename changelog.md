@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [0.3.4] - 2022-05-01
+### Fixed
+- `async_timeout` cancels the timeout task if an exception is being raised in the main task
+
 ## [0.3.3] - 2022-05-01
 ### Added
 - `AsyncWorker`

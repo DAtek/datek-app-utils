@@ -1,9 +1,27 @@
-from asyncio import sleep
+from asyncio import sleep, AbstractEventLoop, all_tasks, Task
 from logging import ERROR
+from typing import Set
 
 from pytest import mark, raises
+
 from datek_app_utils.async_utils import AsyncWorker, async_timeout
 from datek_app_utils.log import create_logger
+
+
+@mark.asyncio
+async def test_async_timeout_cancels_timeout_task_on_error(
+    event_loop: AbstractEventLoop,
+):
+    @async_timeout(1)
+    async def raise_error():
+        raise RuntimeError
+
+    with raises(RuntimeError):
+        await raise_error()
+
+    tasks: Set[Task] = all_tasks()
+    for task in tasks:
+        assert "raise_timeout_error" not in str(task.get_coro())
 
 
 class TestAsyncWorker:

@@ -17,7 +17,7 @@ pytest-cov = ">=2.10.1"
 black = ">=22.1.0"
 mypy = ">=0.942"
 unimport = ">=0.9.5"
-pytest-asyncio = "^0.18.3"
+pytest-asyncio = ">=0.18.3"
 libcst = ">=0.4.1"
 
 [build-system]

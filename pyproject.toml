@@ -9,19 +9,18 @@ readme = "README.md"
 repository = "https://github.com/DAtek/datek-app-utils/"
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = ">=3.8,<3.13"
 
-[tool.poetry.dev-dependencies]
-pytest = ">=6.2.1"
-pytest-cov = ">=2.10.1"
-black = ">=22.1.0"
-mypy = ">=0.942"
-unimport = ">=0.9.5"
-pytest-asyncio = ">=0.18.3"
-libcst = ">=0.4.1"
+[tool.poetry.group.dev.dependencies]
+black = "^24.4.0"
+mypy = "^1.9.0"
+pytest = "^8.1.1"
+pytest-asyncio = "^0.23.6"
+pytest-cov = "^5.0.0"
+unimport = "^1.2.1"
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.pytest.ini_options]

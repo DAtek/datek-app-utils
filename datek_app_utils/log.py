@@ -1,8 +1,9 @@
+import sys
 from logging import Formatter, StreamHandler, getLogger, Logger, INFO, Handler
 
 
 class LogHandler:
-    _handler: Handler = StreamHandler()
+    _handler: Handler = StreamHandler(stream=sys.stdout)
 
     @classmethod
     def set(cls, handler: Handler):

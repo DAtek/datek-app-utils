@@ -1,4 +1,4 @@
-from asyncio import sleep, AbstractEventLoop, all_tasks, Task
+from asyncio import sleep, all_tasks, Task
 from logging import ERROR
 from typing import Set
 
@@ -9,9 +9,7 @@ from datek_app_utils.log import create_logger
 
 
 @mark.asyncio
-async def test_async_timeout_cancels_timeout_task_on_error(
-    event_loop: AbstractEventLoop,
-):
+async def test_async_timeout_cancels_timeout_task_on_error():
     @async_timeout(1)
     async def raise_error():
         raise RuntimeError

@@ -1,13 +1,19 @@
+import sys
 from abc import abstractmethod
 from asyncio import Task, sleep, CancelledError, create_task, gather, Future
 from functools import wraps
-from typing import Callable, Optional
+from typing import Callable, Optional, TypeVar
+
+if sys.version_info >= (3, 10):  # pragma: no cover
+    from typing import ParamSpec
+else:  # pragma: no cover
+    from typing_extensions import ParamSpec
 
 
 class AsyncWorker:
-    def __init__(self):
+    def __init__(self) -> None:
         self._task: Optional[Task] = None
-        self._started = Future()
+        self._started: Future = Future()
 
     @abstractmethod
     async def run(self):  # pragma: no cover
@@ -42,10 +48,14 @@ class AsyncWorker:
         return self._task.__await__()
 
 
+P = ParamSpec("P")
+T = TypeVar("T")
+
+
 def async_timeout(seconds: float):
-    def decorator(func: Callable):
+    def decorator(func: Callable[P, T]):
         @wraps(func)
-        async def wrapper(*args, **kwargs):
+        async def wrapper(*args: P.args, **kwargs: P.kwargs) -> T:
             timeout_task: Optional[Task] = None
             main_task: Optional[Task] = None
 

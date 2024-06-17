@@ -1,8 +1,8 @@
-from pytest import raises, mark
+from pytest import mark, raises
 
 from datek_app_utils.env_config.errors import (
-    ValidationError,
     ConfigAttributeErrorType,
+    ValidationError,
 )
 from datek_app_utils.env_config.utils import validate_config
 

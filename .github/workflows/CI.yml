@@ -8,17 +8,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Install env
         uses: ./.github/actions/install-python-env
 
+      - uses: extractions/setup-just@v2
+
       - name: Lint
         run: |
           source .venv/bin/activate
-          black datek_app_utils/ tests/ --check
-          mypy datek_app_utils/ tests/
-          unimport datek_app_utils/ tests/
+          just format --check
+          just lint
 
       - name: Tests
         run: |
@@ -26,7 +27,7 @@ jobs:
           pytest tests
 
       - name: Upload coverage
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v4
         with:
           fail_ci_if_error: true
           token: ${{ secrets.CODECOV_TOKEN }}

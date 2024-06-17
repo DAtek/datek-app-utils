@@ -5,6 +5,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [0.4.0] - 2024-06-17
+### Changed
+- `Bool` type is replaced with `bool` in `env_config`
+
+### Deleted
+- `class AsyncWorker`
+
 ## [0.3.6] - 2024-04-21
 ### Changed
 - The default log handler in `log.py` now logs to `sys.stdout` instead of `sys.stderr`

@@ -1,5 +1,5 @@
 import sys
-from logging import Formatter, StreamHandler, getLogger, Logger, INFO, Handler
+from logging import INFO, Formatter, Handler, Logger, StreamHandler, getLogger
 
 
 class LogHandler:

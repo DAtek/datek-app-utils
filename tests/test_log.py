@@ -1,6 +1,6 @@
 from logging import DEBUG, Formatter, StreamHandler
 
-from datek_app_utils.log import LogLevel, LogFormatter, create_logger, LogHandler
+from datek_app_utils.log import LogFormatter, LogHandler, LogLevel, create_logger
 
 
 def test_debug(caplog):

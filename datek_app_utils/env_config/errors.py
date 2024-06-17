@@ -1,6 +1,8 @@
 from enum import Enum
 from typing import List
 
+from datek_app_utils.env_config.bool_type import _Bool
+
 
 class InstantiationForbiddenError(Exception):
     pass
@@ -28,7 +30,10 @@ class ConfigAttributeError(Exception):
         return f"{self.attribute_name}: {self.error_type}"
 
     def __str__(self) -> str:
-        return f"{self.attribute_name}: {self.error_type}. Required type: {self.required_type}"
+        required_type = bool if self.required_type is _Bool else self.required_type
+        return (
+            f"{self.attribute_name}: {self.error_type}. Required type: {required_type}"
+        )
 
 
 class ValidationError(Exception):

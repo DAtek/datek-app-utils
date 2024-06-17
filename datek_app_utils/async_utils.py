@@ -1,8 +1,7 @@
 import sys
-from abc import abstractmethod
-from asyncio import Task, sleep, CancelledError, create_task, gather, Future
+from asyncio import CancelledError, Task, create_task, gather, sleep
 from functools import wraps
-from typing import Callable, Optional, TypeVar
+from typing import Awaitable, Callable, Optional, TypeVar
 
 if sys.version_info >= (3, 10):  # pragma: no cover
     from typing import ParamSpec
@@ -10,52 +9,14 @@ else:  # pragma: no cover
     from typing_extensions import ParamSpec
 
 
-class AsyncWorker:
-    def __init__(self) -> None:
-        self._task: Optional[Task] = None
-        self._started: Future = Future()
-
-    @abstractmethod
-    async def run(self):  # pragma: no cover
-        pass
-
-    @abstractmethod
-    async def handle_error(self, error: Exception):  # pragma: no cover
-        pass
-
-    def start(self):
-        self._task = create_task(self._run_forever())
-
-    async def wait_started(self):
-        await self._started
-
-    def stop(self):
-        if self._task and not self._task.done():
-            self._task.cancel()
-
-    async def _run_forever(self):
-        self._started.set_result(1)
-
-        while True:
-            try:
-                await self.run()
-            except CancelledError:
-                return
-            except Exception as error:
-                await self.handle_error(error)
-
-    def __await__(self):
-        return self._task.__await__()
-
-
 P = ParamSpec("P")
 T = TypeVar("T")
 
 
 def async_timeout(seconds: float):
-    def decorator(func: Callable[P, T]):
+    def decorator(func: Callable[P, Awaitable[T]]):
         @wraps(func)
-        async def wrapper(*args: P.args, **kwargs: P.kwargs) -> T:
+        async def wrapper(*args: P.args, **kwargs: P.kwargs) -> Awaitable[T]:
             timeout_task: Optional[Task] = None
             main_task: Optional[Task] = None
 

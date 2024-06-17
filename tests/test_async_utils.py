@@ -1,84 +1,43 @@
-from asyncio import sleep, all_tasks, Task
-from logging import ERROR
+from asyncio import Task, all_tasks, sleep
 from typing import Set
 
-from pytest import mark, raises
+from pytest import raises
 
-from datek_app_utils.async_utils import AsyncWorker, async_timeout
-from datek_app_utils.log import create_logger
-
-
-@mark.asyncio
-async def test_async_timeout_cancels_timeout_task_on_error():
-    @async_timeout(1)
-    async def raise_error():
-        raise RuntimeError
-
-    with raises(RuntimeError):
-        await raise_error()
-
-    tasks: Set[Task] = all_tasks()
-    for task in tasks:
-        assert "raise_timeout_error" not in str(task.get_coro())
+from datek_app_utils.async_utils import async_timeout
 
 
-class TestAsyncWorker:
-    @mark.asyncio
-    @async_timeout(0.1)
-    async def test_worker_finishes_successfully(self):
-        worker = ExampleWorker()
-        worker.start()
-        await worker
+class TestAsyncTimeout:
+    async def test_returns_result_and_cancels_timeout_task(self):
+        @async_timeout(1)
+        async def do_something(*args, **kwargs):
+            return args, kwargs
 
-    @mark.asyncio
-    @async_timeout(0.1)
-    async def test_worker_handles_error_successfully(self, caplog):
-        worker = ExampleWorker(raise_error=True)
-        worker.start()
+        params = ("a", 1)
+        kparams = {"fruit": "apple"}
 
-        await worker
+        result = await do_something(*params, **kparams)
 
-        assert caplog.records
-        log_record = caplog.records[0]
-        assert log_record.levelno == ERROR
-        assert isinstance(log_record.msg, RuntimeError)
-        assert log_record.msg.args == (ExampleWorker.ERROR_MESSAGE,)
+        assert result[0] == params
+        assert result[1] == kparams
+        # only the running test is in the tasks
+        assert len(all_tasks()) == 1
 
-    @mark.asyncio
-    @async_timeout(0.1)
-    async def test_worker_runs_forever(self):
-        worker = ExampleWorker(run_forever=True)
-        worker.start()
-        await worker.wait_started()
+    async def test_cancels_timeout_task_on_error(self):
+        @async_timeout(1)
+        async def raise_error():
+            raise RuntimeError
 
-        @async_timeout(0.05)
-        async def wait_for_worker():
-            await worker
+        with raises(RuntimeError):
+            await raise_error()
+
+        tasks: Set[Task] = all_tasks()
+        for task in tasks:
+            assert "raise_timeout_error" not in str(task.get_coro())
+
+    async def test_raises_timeout(self):
+        @async_timeout(0.001)
+        async def wait():
+            await sleep(0.002)
 
         with raises(TimeoutError):
-            await wait_for_worker()
-
-
-class ExampleWorker(AsyncWorker):
-    ERROR_MESSAGE = "LOL"
-
-    def __init__(self, raise_error: bool = False, run_forever: bool = False):
-        super().__init__()
-        self._raise_error = raise_error
-        self._should_run_forever = run_forever
-        self._logger = create_logger(self.__class__.__name__)
-
-    async def run(self):
-        await sleep(0.01)
-
-        if self._raise_error:
-            raise RuntimeError(self.ERROR_MESSAGE)
-
-        if self._should_run_forever:
-            return
-
-        await self.stop()
-
-    async def handle_error(self, error: Exception):
-        self._logger.error(error)
-        self.stop()
+            await wait()

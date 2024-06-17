@@ -1,13 +1,15 @@
 from os import getenv
 from typing import Any, Iterator, get_args
 
+from datek_app_utils.env_config.bool_type import _Bool
 from datek_app_utils.env_config.errors import InstantiationForbiddenError
 
 
 class Variable:
     def __init__(self, type_: type = str, default_value=...):
         type_args = get_args(type_)
-        self._type = type_args[0] if type_args else type_
+        type_ = type_args[0] if type_args else type_
+        self._type = _Bool if type_ is bool else type_
         self._default_value = default_value
 
     def __set_name__(self, owner, name):
@@ -31,7 +33,8 @@ class Variable:
     @property
     def value(self) -> Any:
         if (value := getenv(self._name)) is not None:
-            return self._type(value)
+            casted_val = self._type(value)
+            return bool(casted_val) if self._type is _Bool else casted_val
 
         if self._default_value is not ...:
             return self._default_value

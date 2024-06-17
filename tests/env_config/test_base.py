@@ -1,7 +1,11 @@
-from pytest import raises
+from pytest import mark, raises
 
 from datek_app_utils.env_config.base import BaseConfig
-from datek_app_utils.env_config.errors import InstantiationForbiddenError
+from datek_app_utils.env_config.errors import (
+    InstantiationForbiddenError,
+    ValidationError,
+)
+from datek_app_utils.env_config.utils import validate_config
 
 
 class SomeOtherMixinWhichDoesntRelateToEnvConfig:
@@ -13,10 +17,10 @@ class TestConfig:
         volume = 5
         monkeypatch.setenv(key_volume, str(volume))
 
-        class Config(SomeOtherMixinWhichDoesntRelateToEnvConfig, base_config_class):
+        class Config(SomeOtherMixinWhichDoesntRelateToEnvConfig, base_config_class):  # type: ignore
             TYPE: str
 
-        items = [item for item in Config]
+        items = [item for item in Config]  # type: ignore
 
         assert len(items) == 5
         assert Config.color == "red"
@@ -45,7 +49,7 @@ class TestConfig:
         volume = 10
         monkeypatch.setenv(key_volume, str(volume))
 
-        assert getattr(base_config_class, "VOLUME") == volume
+        assert volume == base_config_class.VOLUME
 
     def test_constructor_is_forbidden(self):
         class Config(BaseConfig):
@@ -53,3 +57,34 @@ class TestConfig:
 
         with raises(InstantiationForbiddenError):
             Config()
+
+    @mark.parametrize(
+        ["v", "expected"],
+        [
+            ("1", True),
+            ("YeS", True),
+            ("y", True),
+            ("TRUE", True),
+            ("0", False),
+            ("no", False),
+            ("false", False),
+        ],
+    )
+    def test_bool_field(self, monkeypatch, v: str, expected: bool):
+        class Config(BaseConfig):
+            DISABLE_JSON_LOGGING: bool
+
+        monkeypatch.setenv("DISABLE_JSON_LOGGING", v)
+
+        assert Config.DISABLE_JSON_LOGGING is expected
+
+    def test_bool_filed_raises_error_if_invalid(self, monkeypatch):
+        class Config(BaseConfig):
+            DISABLE_JSON_LOGGING: bool
+
+        monkeypatch.setenv("DISABLE_JSON_LOGGING", "haha")
+
+        with raises(ValidationError) as info:
+            validate_config(Config)
+
+        assert "DISABLE_JSON_LOGGING" in str(info.value)

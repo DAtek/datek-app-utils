@@ -1,5 +1,5 @@
 [![codecov](https://codecov.io/gh/DAtek/datek-app-utils/graph/badge.svg?token=UR0G0I41LD)](https://codecov.io/gh/DAtek/datek-app-utils)
-<a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 <a href="https://github.com/psf/black/blob/main/LICENSE"><img alt="License: MIT" src="https://black.readthedocs.io/en/stable/_static/license.svg"></a>
 
 # Utilities for building applications.
@@ -13,22 +13,27 @@
 ## Examples:
 
 ### Env config
+
 ```python
 import os
 
 from datek_app_utils.env_config.base import BaseConfig
 
+# Just for demonstration, of course env vars shouldn't be set in python
 os.environ["COLOR"] = "RED"
 os.environ["TEMPERATURE"] = "50"
+os.environ["DISABLE_AUTOTUNE"] = "y"
 
 
 class Config(BaseConfig):
     COLOR: str
     TEMPERATURE: int
+    DISABLE_AUTOTUNE: bool
 
 
 assert Config.COLOR == "RED"
 assert Config.TEMPERATURE == 50
+assert Config.DISABLE_AUTOTUNE is True
 ```
 
 The `Config` class casts the values automatically.
@@ -42,12 +47,14 @@ from datek_app_utils.env_config.utils import validate_config
 from datek_app_utils.env_config.errors import ValidationError
 
 os.environ["COLOR"] = "RED"
+os.environ["DISABLE_AUTOTUNE"] = "I can't sing but I pretend to be a singer"
 
 
 class Config(BaseConfig):
     COLOR: str
     TEMPERATURE: int
     AMOUNT: int = None
+    DISABLE_AUTOTUNE: bool = None
 
 
 try:
@@ -59,6 +66,7 @@ except ValidationError as error:
 ```
 Output:
 ```
+DISABLE_AUTOTUNE: Invalid value. Required type: <class 'bool'>
 TEMPERATURE: Not set. Required type: <class 'int'>
 ```
 

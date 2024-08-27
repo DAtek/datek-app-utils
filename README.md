@@ -7,7 +7,6 @@
 ## Contains:
 - Config loading from environment
 - Bootstrap for logging
-- Base class for creating async workers
 - Async timeout decorator, which is very useful for writing async tests
 
 ## Examples:
